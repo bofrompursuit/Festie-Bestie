@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FESTIE BESTIE</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">FESTIE BESTIE</div>
+        <nav>
+            <button onclick="scrollToSection('hero')">Home</button>
+            <button onclick="scrollToSection('lineup')">Lineup</button>
+            <button onclick="scrollToSection('schedule')">Schedule</button>
+            <button onclick="scrollToSection('favorites')">My Festie</button>
+        </nav>
+    </header>
+
+    <div id="hero" class="hero-section">
+        <div class="hero-content">
+            <h1>FESTIE BESTIE</h1>
+            <p>YOUR ULTIMATE FESTIVAL COMPANION</p>
+            <button class="cta-btn" onclick="scrollToSection('lineup')">EXPLORE LINEUP</button>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <section id="lineup" class="section">
+            <div class="section-header">
+                <h2>THE LINEUP</h2>
+                <div class="controls">
+                    <input type="text" id="search-bar" placeholder="Search artists...">
+                    <button class="action-btn" onclick="triggerUpload()">+ Add Custom Artist</button>
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                </div>
+            </div>
+            
+            <div id="artist-grid" class="artist-grid">
+                <!-- Artists will be simulated here via JS -->
+            </div>
+        </section>
+
+        <section id="favorites" class="section">
+            <div class="section-header">
+                <h2>MY FESTIE (Favorites)</h2>
+                <button class="calendar-btn" onclick="addToCalendar()">📅 Add to Google Calendar</button>
+            </div>
+            <div id="favorites-grid" class="artist-grid">
+                <!-- Favorites will appear here -->
+            </div>
+        </section>
+
+        <section id="schedule" class="section">
+             <div class="section-header">
+                <h2>SCHEDULE</h2>
+                <button class="notify-btn" onclick="sendNotification()">⌚ Simulate Watch Alert</button>
+            </div>
+            <div class="timeline">
+                <div class="time-slot">
+                    <span class="time">12:00 PM</span>
+                    <div class="event">Gates Open</div>
+                </div>
+                <div class="time-slot">
+                    <span class="time">02:00 PM</span>
+                    <div class="event">Indie Stage Opener</div>
+                </div>
+                <!-- More static schedule items can be here, dynamic ones added via JS -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="toast hidden">
+        ⌚ WATCH ALERT: "Headliner" starts in 10 mins!
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
