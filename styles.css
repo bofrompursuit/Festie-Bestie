@@ -1,15 +1,29 @@
 :root {
-    --primary: #FF2E93;
-    /* Hot Pink */
-    --secondary: #00F0FF;
-    /* Cyan */
-    --accent: #FFD500;
-    /* Yellow */
-    --dark-bg: #121212;
-    --card-bg: #1E1E1E;
+    /* Gov Ball 2026 Palette */
+    --primary: #ff7d32;
+    /* Vibrant Orange */
+    --secondary: #19e6ff;
+    /* Cyan/Aqua */
+    --accent: #ff19af;
+    /* Neon Pink */
+    --accent-purple: #6400ff;
+    /* Deep Purple */
+
+    --dark-bg: #000000;
+    /* Pure Black */
+    --card-bg: #151515;
+    /* Charcoal */
     --text: #ffffff;
-    --font-main: 'Outfit', sans-serif;
-    --gradient-hero: linear-gradient(135deg, #FF2E93, #00F0FF);
+
+    /* Typography */
+    --font-heading: 'Climate Crisis', cursive;
+    /* Main Titles */
+    --font-subheading: 'Teko', sans-serif;
+    /* Buttons/Subtitles */
+    --font-body: 'IBM Plex Mono', monospace;
+    /* Body Text */
+
+    --gradient-hero: linear-gradient(135deg, #ff7d32, #ff19af);
 }
 
 * {
@@ -83,34 +97,44 @@ nav button:hover {
 }
 
 .hero-content h1 {
-    font-size: 5rem;
-    line-height: 1;
-    font-weight: 900;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(255, 46, 147, 0.5);
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    text-shadow: 4px 4px 0 var(--accent-purple);
+    text-transform: uppercase;
 }
 
 .hero-content p {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+    font-family: var(--font-subheading);
+    font-size: 2rem;
+    margin-bottom: 3rem;
     letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--secondary);
 }
 
 .cta-btn {
     background: var(--primary);
-    color: white;
+    color: black;
     border: none;
-    padding: 1rem 3rem;
-    font-size: 1.2rem;
+    padding: 1rem 3.5rem;
+    font-family: var(--font-subheading);
+    font-size: 1.8rem;
     font-weight: 700;
-    border-radius: 50px;
+    text-transform: uppercase;
+    border-radius: 0;
+    /* Sharp edges for Teko style */
+    clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+    /* Edgy shape */
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .cta-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px var(--primary);
+    transform: translateY(-5px);
+    background: var(--accent);
+    box-shadow: 5px 5px 0 var(--secondary);
 }
 
 /* Sections */
@@ -136,10 +160,12 @@ nav button:hover {
 }
 
 h2 {
-    font-size: 3rem;
-    font-weight: 900;
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 400;
     text-transform: uppercase;
     color: var(--secondary);
+    text-shadow: 3px 3px 0 rgba(255, 255, 255, 0.1);
 }
 
 .controls,
@@ -150,42 +176,58 @@ h2 {
 
 input[type="text"] {
     padding: 0.8rem 1.5rem;
-    border-radius: 30px;
-    border: 1px solid #333;
-    background: #222;
+    border-radius: 0;
+    border: 2px solid var(--primary);
+    background: black;
     color: white;
-    font-family: inherit;
+    font-family: var(--font-body);
 }
 
 .action-btn,
 .calendar-btn,
 .notify-btn {
-    padding: 0.8rem 1.5rem;
-    border-radius: 30px;
-    border: none;
+    padding: 0.5rem 2rem;
+    border-radius: 0;
+    font-family: var(--font-subheading);
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    border: 2px solid white;
     font-weight: 700;
     cursor: pointer;
-    background: white;
-    color: black;
+    background: transparent;
+    color: white;
     transition: all 0.2s ease;
 }
 
-.action-btn:hover {
-    background: var(--secondary);
+.action-btn:hover,
+.calendar-btn:hover,
+.notify-btn:hover {
+    background: var(--primary);
+    color: black;
+    border-color: var(--primary);
+    box-shadow: 4px 4px 0 var(--accent);
 }
 
 .calendar-btn {
-    background: #4285F4;
-    color: white;
+    border-color: #4285F4;
+    color: #4285F4;
 }
 
 .calendar-btn:hover {
-    background: #357ABD;
+    background: #4285F4;
+    color: white;
+    border-color: #4285F4;
 }
 
 .notify-btn {
-    background: #34A853;
-    color: white;
+    border-color: #4cd964;
+    color: #4cd964;
+}
+
+.notify-btn:hover {
+    background: #4cd964;
+    color: black;
+    border-color: #4cd964;
 }
 
 /* Grid */
