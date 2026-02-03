@@ -1,29 +1,22 @@
 :root {
-    /* Gov Ball 2026 Palette */
-    --primary: #ff7d32;
-    /* Vibrant Orange */
-    --secondary: #19e6ff;
-    /* Cyan/Aqua */
-    --accent: #ff19af;
-    /* Neon Pink */
-    --accent-purple: #6400ff;
-    /* Deep Purple */
+    /* "Dark Neon" Figma Palette */
+    --bg-deep: #000000;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
 
-    --dark-bg: #000000;
-    /* Pure Black */
-    --card-bg: #151515;
-    /* Charcoal */
-    --text: #ffffff;
+    --accent-purple: #bd00ff;
+    --accent-pink: #ff007a;
+    --accent-blue: #00f0ff;
+
+    --gradient-primary: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    --gradient-glow: radial-gradient(circle at 50% 50%, rgba(189, 0, 255, 0.2), rgba(0, 0, 0, 0));
 
     /* Typography */
-    --font-heading: 'Climate Crisis', cursive;
-    /* Main Titles */
-    --font-subheading: 'Teko', sans-serif;
-    /* Buttons/Subtitles */
-    --font-body: 'IBM Plex Mono', monospace;
-    /* Body Text */
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
 
-    --gradient-hero: linear-gradient(135deg, #ff7d32, #ff19af);
+    --card-bg: rgba(255, 255, 255, 0.05);
+    /* Glass effect */
 }
 
 * {
@@ -33,10 +26,13 @@
 }
 
 body {
-    background-color: var(--dark-bg);
-    color: var(--text);
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
     font-family: var(--font-body);
     overflow-x: hidden;
+    background-image: var(--gradient-glow);
+    background-attachment: fixed;
+    background-size: 150% 150%;
 }
 
 /* Header */
@@ -56,32 +52,33 @@ body {
 
 .logo {
     font-family: var(--font-heading);
-    font-weight: 400;
-    /* Font is heavy by default */
-    font-size: 1.8rem;
-    letter-spacing: 1px;
-    color: var(--text);
-    text-shadow: 2px 2px 0 var(--accent);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(189, 0, 255, 0.5);
     text-transform: uppercase;
-    background: none;
-    -webkit-text-fill-color: initial;
 }
 
 nav button {
     background: none;
     border: none;
-    color: var(--text);
-    margin-left: 1.5rem;
+    color: var(--text-secondary);
+    margin-left: 2rem;
     cursor: pointer;
-    font-family: var(--font-subheading);
+    font-family: var(--font-heading);
     font-weight: 600;
-    font-size: 1.4rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
     transition: color 0.3s;
 }
 
 nav button:hover {
-    color: var(--primary);
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* Hero */
@@ -98,43 +95,47 @@ nav button:hover {
 
 .hero-content h1 {
     font-family: var(--font-heading);
-    font-size: 4rem;
-    line-height: 1.1;
+    font-size: 6rem;
+    /* Massive Figma style */
+    line-height: 0.9;
+    font-weight: 900;
     margin-bottom: 2rem;
-    text-shadow: 4px 4px 0 var(--accent-purple);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-transform: uppercase;
 }
 
 .hero-content p {
-    font-family: var(--font-subheading);
-    font-size: 2rem;
+    font-family: var(--font-body);
+    font-size: 1.2rem;
     margin-bottom: 3rem;
-    letter-spacing: 2px;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    color: var(--secondary);
+    color: var(--text-secondary);
 }
 
 .cta-btn {
-    background: var(--primary);
-    color: black;
+    background: var(--gradient-primary);
+    color: white;
     border: none;
-    padding: 1rem 3.5rem;
-    font-family: var(--font-subheading);
-    font-size: 1.8rem;
+    padding: 1.2rem 4rem;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
     font-weight: 700;
     text-transform: uppercase;
-    border-radius: 0;
-    /* Sharp edges for Teko style */
-    clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
-    /* Edgy shape */
+    border-radius: 100px;
+    /* Pill shape */
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 10px 30px rgba(189, 0, 255, 0.4);
+    clip-path: none;
+    /* Remove edgy clip */
 }
 
 .cta-btn:hover {
-    transform: translateY(-5px);
-    background: var(--accent);
-    box-shadow: 5px 5px 0 var(--secondary);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 0, 122, 0.6);
 }
 
 /* Sections */
