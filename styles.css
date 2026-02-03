@@ -21,7 +21,7 @@
 body {
     background-color: var(--dark-bg);
     color: var(--text);
-    font-family: var(--font-main);
+    font-family: var(--font-body);
     overflow-x: hidden;
 }
 
@@ -41,12 +41,16 @@ body {
 }
 
 .logo {
-    font-weight: 900;
-    font-size: 1.5rem;
-    letter-spacing: -1px;
-    background: var(--gradient-hero);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    /* Font is heavy by default */
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    color: var(--text);
+    text-shadow: 2px 2px 0 var(--accent);
+    text-transform: uppercase;
+    background: none;
+    -webkit-text-fill-color: initial;
 }
 
 nav button {
@@ -55,8 +59,10 @@ nav button {
     color: var(--text);
     margin-left: 1.5rem;
     cursor: pointer;
-    font-weight: 500;
-    font-size: 1rem;
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 1.4rem;
+    text-transform: uppercase;
     transition: color 0.3s;
 }
 
@@ -223,15 +229,19 @@ input[type="text"] {
 }
 
 .artist-name {
-    font-size: 1.5rem;
+    font-family: var(--font-subheading);
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
+    line-height: 1;
+    text-transform: uppercase;
 }
 
 .artist-meta {
-    color: #888;
+    color: var(--secondary);
     font-size: 0.9rem;
     margin-bottom: 1rem;
+    font-weight: 700;
 }
 
 /* Pin Button */
