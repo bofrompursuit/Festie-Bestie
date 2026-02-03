@@ -18,6 +18,7 @@
         <nav>
             <button onclick="scrollToSection('hero')">Home</button>
             <button onclick="scrollToSection('lineup')">Lineup</button>
+            <button onclick="scrollToSection('map-finder')">Map</button>
             <button onclick="scrollToSection('schedule')">Schedule</button>
             <button onclick="scrollToSection('favorites')">My Festie</button>
         </nav>
@@ -50,6 +51,34 @@
             </div>
         </section>
 
+        <section id="map-finder" class="section">
+            <div class="section-header">
+                <h2>FRIEND FINDER</h2>
+                <div class="controls">
+                    <button class="action-btn" onclick="setMeetupPoint()">📍 Drop Meetup Pin</button>
+                    <div class="live-indicator">
+                        <span class="dot"></span> LIVE LOCTION SHARING
+                    </div>
+                </div>
+            </div>
+            <div class="map-container" id="festival-map">
+                <!-- Map will be CSS background -->
+                <div class="friend-pin" style="top: 40%; left: 30%;" data-name="Sarah">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80"
+                        alt="Sarah">
+                </div>
+                <div class="friend-pin" style="top: 60%; left: 70%;" data-name="Mike">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80"
+                        alt="Mike">
+                </div>
+                <div class="friend-pin" style="top: 20%; left: 60%;" data-name="Jess">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"
+                        alt="Jess">
+                </div>
+            </div>
+            <p class="map-note">Tap markers to see who it is. Click "Drop Meetup Pin" to alert your squad.</p>
+        </section>
+
         <section id="favorites" class="section">
             <div class="section-header">
                 <h2>MY FESTIE (Favorites)</h2>
@@ -57,6 +86,32 @@
             </div>
             <div id="favorites-grid" class="artist-grid">
                 <!-- Favorites will appear here -->
+            </div>
+        </section>
+
+        <section id="survival" class="section">
+            <div class="section-header">
+                <h2>SURVIVAL GUIDE</h2>
+                <span class="offline-badge">✅ AVAILABLE OFFLINE</span>
+            </div>
+            <div class="survival-grid">
+                <div class="survival-card">
+                    <h3>🎒 Packing List</h3>
+                    <ul>
+                        <li><input type="checkbox"> Water Bottle (Empty)</li>
+                        <li><input type="checkbox"> Sunscreen</li>
+                        <li><input type="checkbox"> Power Bank</li>
+                        <li><input type="checkbox"> Earplugs</li>
+                    </ul>
+                </div>
+                <div class="survival-card">
+                    <h3>💧 Water Stations</h3>
+                    <p>Free refills located at: <br>• Main Stage Left<br>• Entrance B<br>• Food Court Zone</p>
+                </div>
+                <div class="survival-card">
+                    <h3>🔐 Locker Info</h3>
+                    <p><strong>Code:</strong> 4492 (Example)<br>Location: Near Medical Tent</p>
+                </div>
             </div>
         </section>
 

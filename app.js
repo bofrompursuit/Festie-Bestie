@@ -1,10 +1,10 @@
 // Simulated Data
 const initialArtists = [
-    { id: 1, name: "The Strokes", genre: "Indie Rock", image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?auto=format&fit=crop&q=80" },
-    { id: 2, name: "SZA", genre: "R&B", image: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80" },
-    { id: 3, name: "Kendrick Lamar", genre: "Hip Hop", image: "https://images.unsplash.com/photo-1621360841013-c768371e93cf?auto=format&fit=crop&q=80" },
-    { id: 4, name: "Tame Impala", genre: "Psychedelic", image: "https://images.unsplash.com/photo-1514525253440-b39345208668?auto=format&fit=crop&q=80" },
-    { id: 5, name: "Lizzo", genre: "Pop", image: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?auto=format&fit=crop&q=80" }
+    { id: 1, name: "The Strokes", genre: "Indie Rock", image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?auto=format&fit=crop&q=80", timeStart: 2000, timeEnd: 2130 }, // 8:00 PM - 9:30 PM
+    { id: 2, name: "SZA", genre: "R&B", image: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80", timeStart: 2100, timeEnd: 2230 }, // 9:00 PM - 10:30 PM (Overlap!)
+    { id: 3, name: "Kendrick Lamar", genre: "Hip Hop", image: "https://images.unsplash.com/photo-1621360841013-c768371e93cf?auto=format&fit=crop&q=80", timeStart: 1800, timeEnd: 1900 },
+    { id: 4, name: "Tame Impala", genre: "Psychedelic", image: "https://images.unsplash.com/photo-1514525253440-b39345208668?auto=format&fit=crop&q=80", timeStart: 1930, timeEnd: 2100 }, // Overlaps Strokes
+    { id: 5, name: "Lizzo", genre: "Pop", image: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?auto=format&fit=crop&q=80", timeStart: 1600, timeEnd: 1730 }
 ];
 
 // State
@@ -60,11 +60,37 @@ function renderArtists(list) {
     });
 }
 
-// Render Favorites
+// Render Favorites & Check Conflicts
 function renderFavorites() {
     const grid = document.getElementById('favorites-grid');
     const favArtists = artists.filter(a => favorites.includes(a.id));
     grid.innerHTML = '';
+
+    // Check overlaps
+    let conflicts = [];
+    for (let i = 0; i < favArtists.length; i++) {
+        for (let j = i + 1; j < favArtists.length; j++) {
+            const a = favArtists[i];
+            const b = favArtists[j];
+            if (a.timeStart && b.timeStart && a.timeStart < b.timeEnd && b.timeStart < a.timeEnd) {
+                conflicts.push([a, b]);
+            }
+        }
+    }
+
+    // Display Conflict Warning
+    if (conflicts.length > 0) {
+        const conflictDiv = document.createElement('div');
+        conflictDiv.className = 'conflict-alert';
+        conflictDiv.innerHTML = `
+            <h3>⚠️ SCHEDULE CLASH DETECTED</h3>
+            <p><strong>${conflicts[0][0].name}</strong> overlaps with <strong>${conflicts[0][1].name}</strong>.</p>
+            <div class="split-suggestion">
+                💡 <strong>Split Set Idea:</strong> Catch the first 30 mins of ${conflicts[0][0].name}, then run to ${conflicts[0][1].name}!
+            </div>
+        `;
+        grid.appendChild(conflictDiv);
+    }
 
     if (favArtists.length === 0) {
         grid.innerHTML = '<p style="color: #666; grid-column: 1/-1;">No favorites yet. Go pin some artists!</p>';
@@ -72,7 +98,7 @@ function renderFavorites() {
     }
 
     favArtists.forEach(artist => {
-        const card = document.createElement('div');
+        const card = document.createElement('div'); // ... same card creation logic
         card.className = 'artist-card';
         card.innerHTML = `
              <div class="card-img-container">
@@ -81,11 +107,22 @@ function renderFavorites() {
             </div>
             <div class="card-info">
                 <div class="artist-name">${artist.name}</div>
-                <div class="artist-meta">${artist.genre}</div>
+                <div class="artist-meta">${formatTime(artist.timeStart)} - ${formatTime(artist.timeEnd)}</div>
             </div>
         `;
         grid.appendChild(card);
     });
+}
+
+function formatTime(num) {
+    if (!num) return 'TBA';
+    let str = num.toString();
+    // Simple mock formatting for 24h int like 2000 -> 8:00 PM
+    let hour = Math.floor(num / 100);
+    let min = num % 100;
+    let ampm = hour >= 12 ? 'PM' : 'AM';
+    if (hour > 12) hour -= 12;
+    return `${hour}:${min.toString().padStart(2, '0')} ${ampm}`;
 }
 
 // Toggle Favorite
@@ -232,4 +269,53 @@ function completeImport(modal, source) {
     setTimeout(() => {
         toast.classList.remove('show');
     }, 4000);
+}
+
+// Friend Finder Logic
+window.setMeetupPoint = function () {
+    const map = document.getElementById('festival-map');
+
+    // Remove existing meetup pin
+    const existing = map.querySelector('.meetup-pin');
+    if (existing) existing.remove();
+
+    // Create new pin randomly for demo (or click listener in real app)
+    const pin = document.createElement('div');
+    pin.className = 'meetup-pin';
+    pin.innerHTML = '📍';
+    pin.style.top = (20 + Math.random() * 60) + '%';
+    pin.style.left = (20 + Math.random() * 60) + '%';
+
+    map.appendChild(pin);
+
+    // Alert
+    const toast = document.getElementById('notification-toast');
+    toast.innerHTML = `📍 Meetup Point Set! Notifying Squad...`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Simulate Friend Movement
+setInterval(() => {
+    const pins = document.querySelectorAll('.friend-pin');
+    pins.forEach(pin => {
+        // Small random movement
+        const currentTop = parseFloat(pin.style.top);
+        const currentLeft = parseFloat(pin.style.left);
+
+        const newTop = currentTop + (Math.random() - 0.5) * 5;
+        const newLeft = currentLeft + (Math.random() - 0.5) * 5;
+
+        // Keep bounds
+        if (newTop > 10 && newTop < 90) pin.style.top = newTop + '%';
+    });
+}, 3000);
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered!', reg))
+            .catch(err => console.log('SW registration failed: ', err));
+    });
 }
