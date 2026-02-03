@@ -89,7 +89,7 @@ function renderFavorites() {
 }
 
 // Toggle Favorite
-window.toggleFavorite = function(id) {
+window.toggleFavorite = function (id) {
     if (favorites.includes(id)) {
         favorites = favorites.filter(favId => favId !== id);
     } else {
@@ -101,7 +101,7 @@ window.toggleFavorite = function(id) {
 }
 
 // Upload Handling
-window.triggerUpload = function() {
+window.triggerUpload = function () {
     document.getElementById('image-upload').click();
 }
 
@@ -110,7 +110,7 @@ function handleImageUpload(event) {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         const newArtist = {
             id: Date.now(),
             name: "Custom Artist", // In a real app, we'd ask for input
@@ -125,21 +125,111 @@ function handleImageUpload(event) {
 }
 
 // Integrations
-window.addToCalendar = function() {
+window.addToCalendar = function () {
     // Generate a mock .ics file content or link
     const eventDetails = "Festie Bestie Plan\nCheck your app for details!";
     const mailToLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=My+Festival+Schedule&details=${encodeURIComponent(eventDetails)}`;
     window.open(mailToLink, '_blank');
 }
 
-window.sendNotification = function() {
+window.sendNotification = function () {
     const toast = document.getElementById('notification-toast');
     toast.classList.add('show');
-    
+
     // Simulate smart watch connect
     console.log("Connecting to SmartWatch...");
-    
+
     setTimeout(() => {
         toast.classList.remove('show');
     }, 5000);
+}
+
+// Smart Import Logic
+window.triggerSmartScan = function () {
+    document.getElementById('poster-upload').click();
+}
+
+// Handle File Selection (Poster)
+window.handlePosterScan = function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Show Modal
+    const modal = document.getElementById('scan-modal');
+    const status = document.getElementById('scan-status');
+    const details = document.getElementById('scan-details');
+
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => modal.classList.add('active'));
+
+    // Simulate Analysis Steps
+    setTimeout(() => {
+        status.textContent = "Detecting Text...";
+        details.textContent = "Found 15 potential artist names...";
+    }, 1500);
+
+    setTimeout(() => {
+        status.textContent = "Matching Genres...";
+        details.textContent = "Categorizing into Indie, Rock, Pop...";
+    }, 3000);
+
+    setTimeout(() => {
+        status.textContent = "Building Schedule...";
+        details.textContent = " assigning time slots...";
+    }, 4500);
+
+    setTimeout(() => {
+        completeImport(modal, "Poster");
+    }, 6000);
+}
+
+window.triggerLinkImport = function () {
+    const link = prompt("Paste the URL of the festival lineup or schedule:");
+    if (link) {
+        // Show Modal
+        const modal = document.getElementById('scan-modal');
+        const status = document.getElementById('scan-status');
+        const details = document.getElementById('scan-details');
+
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => modal.classList.add('active'));
+
+        status.textContent = "Scraping Website...";
+        details.textContent = "Accessing " + link;
+
+        // Simulate Analysis Steps
+        setTimeout(() => {
+            status.textContent = "Extracting Data...";
+            details.textContent = "Found table data...";
+        }, 2000);
+
+        setTimeout(() => {
+            completeImport(modal, "Link");
+        }, 4000);
+    }
+}
+
+function completeImport(modal, source) {
+    modal.classList.remove('active');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+
+    // Initial Simulated Imported Artists
+    const newArtists = [
+        { id: Date.now() + 1, name: "Neon Dreams", genre: "Synth Pop", image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&q=80" },
+        { id: Date.now() + 2, name: "The Midnight Echo", genre: "Alternative", image: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&q=80" },
+        { id: Date.now() + 3, name: "Electric Youth", genre: "Electronic", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80" }
+    ];
+
+    // Prepend to list
+    artists = [...newArtists, ...artists];
+    localStorage.setItem('artists', JSON.stringify(artists));
+    renderArtists(artists);
+
+    // Show Success Toast
+    const toast = document.getElementById('notification-toast');
+    toast.innerHTML = `✅ ${source} Analyzed! Added ${newArtists.length} new artists.`;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 4000);
 }

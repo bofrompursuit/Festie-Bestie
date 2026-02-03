@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <header class="main-header">
@@ -30,17 +32,19 @@
     </div>
 
     <div class="container">
-        
+
         <section id="lineup" class="section">
             <div class="section-header">
                 <h2>THE LINEUP</h2>
                 <div class="controls">
                     <input type="text" id="search-bar" placeholder="Search artists...">
-                    <button class="action-btn" onclick="triggerUpload()">+ Add Custom Artist</button>
-                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    <div class="import-group">
+                        <button class="action-btn" onclick="triggerSmartScan()">📷 Scan Poster</button>
+                        <button class="action-btn" onclick="triggerLinkImport()">🔗 Import Link</button>
+                    </div>
                 </div>
             </div>
-            
+
             <div id="artist-grid" class="artist-grid">
                 <!-- Artists will be simulated here via JS -->
             </div>
@@ -57,7 +61,7 @@
         </section>
 
         <section id="schedule" class="section">
-             <div class="section-header">
+            <div class="section-header">
                 <h2>SCHEDULE</h2>
                 <button class="notify-btn" onclick="sendNotification()">⌚ Simulate Watch Alert</button>
             </div>
@@ -81,6 +85,23 @@
         ⌚ WATCH ALERT: "Headliner" starts in 10 mins!
     </div>
 
+    <!-- Hidden Inputs -->
+    <input type="file" id="poster-upload" accept="image/*" style="display: none;" onchange="handlePosterScan(event)">
+
+    <!-- Scanning Modal -->
+    <div id="scan-modal" class="scan-modal hidden">
+        <div class="scan-content">
+            <div class="scan-animation">
+                <div class="scan-line"></div>
+                <img src="https://cdn-icons-png.flaticon.com/512/3342/3342137.png" alt="Scanning Icon"
+                    class="scan-icon">
+            </div>
+            <h3 id="scan-status">Analyzing Lineup...</h3>
+            <p id="scan-details">Identifying artists and times...</p>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
+
 </html>
