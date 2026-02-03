@@ -162,23 +162,44 @@ function handleImageUpload(event) {
 }
 
 // Integrations
+// Integrations
 window.addToCalendar = function () {
-    // Generate a mock .ics file content or link
-    const eventDetails = "Festie Bestie Plan\nCheck your app for details!";
-    const mailToLink = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=My+Festival+Schedule&details=${encodeURIComponent(eventDetails)}`;
-    window.open(mailToLink, '_blank');
+    const favArtists = artists.filter(a => favorites.includes(a.id));
+    if (favArtists.length === 0) {
+        alert("Pin some artists first!");
+        return;
+    }
+
+    const artistList = favArtists.map(a => `${a.name} (${formatTime(a.timeStart)} - ${formatTime(a.timeEnd)})`).join('\\n');
+    const title = encodeURIComponent("My Festie Bestie Schedule");
+    const details = encodeURIComponent("My Lineup:\\n" + artistList);
+    const location = encodeURIComponent("Governors Ball, NYC");
+
+    // Create a Google Calendar Event Link (Defaults to today)
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
+    window.open(url, '_blank');
 }
 
 window.sendNotification = function () {
     const toast = document.getElementById('notification-toast');
+
+    // 1. Show In-App Toast
     toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 5000);
 
-    // Simulate smart watch connect
-    console.log("Connecting to SmartWatch...");
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 5000);
+    // 2. Request & Send Real Browser Notification
+    if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification("⌚ Festie Bestie Alert", {
+                    body: "HEADLINER STARTING SOON! Get to the Main Stage.",
+                    icon: "https://cdn-icons-png.flaticon.com/512/3075/3075908.png"
+                });
+            } else {
+                console.log("Notification permission needed for real alerts.");
+            }
+        });
+    }
 }
 
 // Smart Import Logic
