@@ -293,6 +293,59 @@ function completeImport(modal, source) {
 }
 
 // Friend Finder Logic
+const initialFriends = [
+    { id: 1, name: "Sarah", status: "At the Main Stage", location: "Main Stage", x: 30, y: 40, battery: 78, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80" },
+    { id: 2, name: "Mike", status: "Grabbing food", location: "Food Court", x: 70, y: 60, battery: 45, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" },
+    { id: 3, name: "Jess", status: "Chilling @ VIP", location: "VIP Text", x: 60, y: 20, battery: 92, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80" }
+];
+
+let friends = JSON.parse(localStorage.getItem('friends')) || initialFriends;
+
+// Render Friends on Map
+function renderFriends() {
+    const map = document.getElementById('festival-map');
+    // Clear existing friend pins (keep meetup pin if any)
+    const existingPins = map.querySelectorAll('.friend-pin');
+    existingPins.forEach(p => p.remove());
+
+    friends.forEach(friend => {
+        const pin = document.createElement('div');
+        pin.className = 'friend-pin';
+        pin.style.left = friend.x + '%';
+        pin.style.top = friend.y + '%';
+        pin.setAttribute('data-name', friend.name);
+        pin.onclick = () => showFriendDetails(friend);
+
+        pin.innerHTML = `<img src="${friend.image}" alt="${friend.name}">`;
+        map.appendChild(pin);
+    });
+}
+
+// Show Friend Details
+window.showFriendDetails = function (friend) {
+    const modal = document.getElementById('friend-modal');
+    document.getElementById('friend-img').src = friend.image;
+    document.getElementById('friend-name').textContent = friend.name;
+    document.getElementById('friend-status').textContent = `"${friend.status}"`;
+    document.getElementById('friend-battery').textContent = friend.battery + '%';
+    document.getElementById('friend-location').textContent = friend.location;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('active');
+}
+
+window.closeFriendModal = function () {
+    const modal = document.getElementById('friend-modal');
+    modal.classList.remove('active');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+window.pingFriend = function () {
+    const name = document.getElementById('friend-name').textContent;
+    alert(`👋 Pinged ${name}! They'll get a nudge.`);
+    closeFriendModal();
+}
+
 window.setMeetupPoint = function () {
     const map = document.getElementById('festival-map');
 
@@ -318,19 +371,26 @@ window.setMeetupPoint = function () {
 
 // Simulate Friend Movement
 setInterval(() => {
-    const pins = document.querySelectorAll('.friend-pin');
-    pins.forEach(pin => {
-        // Small random movement
-        const currentTop = parseFloat(pin.style.top);
-        const currentLeft = parseFloat(pin.style.left);
+    friends = friends.map(friend => {
+        // Random walk
+        let newX = friend.x + (Math.random() - 0.5) * 4;
+        let newY = friend.y + (Math.random() - 0.5) * 4;
 
-        const newTop = currentTop + (Math.random() - 0.5) * 5;
-        const newLeft = currentLeft + (Math.random() - 0.5) * 5;
+        // Bounds check (0-100)
+        newX = Math.max(5, Math.min(95, newX));
+        newY = Math.max(5, Math.min(95, newY));
 
-        // Keep bounds
-        if (newTop > 10 && newTop < 90) pin.style.top = newTop + '%';
+        return { ...friend, x: newX, y: newY };
     });
-}, 3000);
+
+    // Save minimal updates to local storage? maybe not needed for mock
+    // localStorage.setItem('friends', JSON.stringify(friends)); 
+
+    renderFriends();
+}, 2500);
+
+// Init Render
+renderFriends();
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {

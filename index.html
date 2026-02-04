@@ -63,19 +63,26 @@
             </div>
             <div class="map-container" id="festival-map">
                 <!-- Map will be CSS background -->
-                <div class="friend-pin" style="top: 40%; left: 30%;" data-name="Sarah">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80"
-                        alt="Sarah">
-                </div>
-                <div class="friend-pin" style="top: 60%; left: 70%;" data-name="Mike">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80"
-                        alt="Mike">
-                </div>
-                <div class="friend-pin" style="top: 20%; left: 60%;" data-name="Jess">
-                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"
-                        alt="Jess">
+                <!-- Dynamic Pins will be inserted here -->
+            </div>
+
+            <!-- Friend Details Modal -->
+            <div id="friend-modal" class="friend-modal hidden">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeFriendModal()">&times;</span>
+                    <div class="friend-profile">
+                        <img id="friend-img" src="" alt="Friend">
+                        <h3 id="friend-name">Name</h3>
+                        <p id="friend-status" class="status-text">Status</p>
+                        <div class="friend-stats">
+                            <span>🔋 <span id="friend-battery">100%</span></span>
+                            <span>📍 <span id="friend-location">Unknown</span></span>
+                        </div>
+                        <button class="action-btn" onclick="pingFriend()">👋 Ping</button>
+                    </div>
                 </div>
             </div>
+
             <p class="map-note">Tap markers to see who it is. Click "Drop Meetup Pin" to alert your squad.</p>
         </section>
 
