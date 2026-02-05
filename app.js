@@ -380,36 +380,28 @@ window.initMap = function () {
 }
 
 // Render Friends as Markers
-function renderFriends() {
+async function renderFriends() {
     if (!map) return;
+
+    // Use AdvancedMarkerElement for HTML content support
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
     friends.forEach(friend => {
         // If marker exists, update position
         if (friendMarkers[friend.id]) {
-            const latLng = new google.maps.LatLng(friend.lat, friend.lng);
-            friendMarkers[friend.id].setPosition(latLng);
+            friendMarkers[friend.id].position = { lat: friend.lat, lng: friend.lng };
         } else {
-            // Create new marker
-            // Custom icon handling
-            const icon = {
-                url: friend.image, // Using user profile pic as icon - simulated by simple marker for now or need custom overlay
-                scaledSize: new google.maps.Size(40, 40),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(20, 40)
-            };
+            // Create Custom HTML element matching original design
+            const pin = document.createElement('div');
+            pin.className = 'friend-pin';
+            pin.setAttribute('data-name', friend.name);
+            pin.innerHTML = `<img src="${friend.image}" alt="${friend.name}">`;
 
-            // Using standard marker with label for simplicity first, or circle
-            const marker = new google.maps.Marker({
-                position: { lat: friend.lat, lng: friend.lng },
+            const marker = new AdvancedMarkerElement({
                 map: map,
+                position: { lat: friend.lat, lng: friend.lng },
                 title: friend.name,
-                animation: google.maps.Animation.DROP,
-                // Simple label for now to distinguish
-                label: {
-                    text: friend.name[0],
-                    color: "white",
-                    fontWeight: "bold"
-                }
+                content: pin,
             });
 
             // Add click listener
@@ -447,28 +439,27 @@ window.pingFriend = function () {
     closeFriendModal();
 }
 
-window.setMeetupPoint = function () {
+window.setMeetupPoint = async function () {
     if (!map) return;
+
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
     // Get center of map
     const center = map.getCenter();
 
     // Remove existing
-    if (meetupMarker) meetupMarker.setMap(null);
+    if (meetupMarker) meetupMarker.map = null;
 
-    meetupMarker = new google.maps.Marker({
+    // Create original style meetup pin
+    const pin = document.createElement('div');
+    pin.className = 'meetup-pin';
+    pin.innerHTML = '📍';
+
+    meetupMarker = new AdvancedMarkerElement({
         position: center,
         map: map,
         title: "Meetup Point",
-        animation: google.maps.Animation.BOUNCE,
-        icon: {
-            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-            scale: 6,
-            fillColor: "#bd00ff",
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "white"
-        }
+        content: pin,
     });
 
     // Alert
