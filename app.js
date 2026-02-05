@@ -292,32 +292,133 @@ function completeImport(modal, source) {
     }, 4000);
 }
 
-// Friend Finder Logic
+// Friend Finder Logic (Google Maps Integration)
+let map;
+let friendMarkers = {};
+let meetupMarker = null;
+
+// Initial Data with Real Coordinates (Randalls Island / Gov Ball context)
+// Base coords: 40.796944, -73.922114 (Approx Randalls Island)
 const initialFriends = [
-    { id: 1, name: "Sarah", status: "At the Main Stage", location: "Main Stage", x: 30, y: 40, battery: 78, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80" },
-    { id: 2, name: "Mike", status: "Grabbing food", location: "Food Court", x: 70, y: 60, battery: 45, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" },
-    { id: 3, name: "Jess", status: "Chilling @ VIP", location: "VIP Text", x: 60, y: 20, battery: 92, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80" }
+    { id: 1, name: "Sarah", status: "At the Main Stage", location: "Main Stage", lat: 40.7960, lng: -73.9220, battery: 78, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80" },
+    { id: 2, name: "Mike", status: "Grabbing food", location: "Food Court", lat: 40.7975, lng: -73.9240, battery: 45, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" },
+    { id: 3, name: "Jess", status: "Chilling @ VIP", location: "VIP Tent", lat: 40.7965, lng: -73.9210, battery: 92, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80" }
 ];
 
 let friends = JSON.parse(localStorage.getItem('friends')) || initialFriends;
 
-// Render Friends on Map
+// Init Google Map
+window.initMap = function () {
+    const mapOptions = {
+        center: { lat: 40.7968, lng: -73.9225 }, // Randalls Island
+        zoom: 16,
+        mapId: '8e0a97af9386f1e5', // Optional: Use a Map ID for styling if available, or remove
+        disableDefaultUI: false,
+        styles: [ // Dark Mode Style
+            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+            { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+            {
+                featureType: "administrative.locality",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+            },
+            {
+                featureType: "poi",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+            },
+            {
+                featureType: "poi.park",
+                elementType: "geometry",
+                stylers: [{ color: "#263c3f" }],
+            },
+            {
+                featureType: "poi.park",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#6b9a76" }],
+            },
+            {
+                featureType: "road",
+                elementType: "geometry",
+                stylers: [{ color: "#38414e" }],
+            },
+            {
+                featureType: "road",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#212a37" }],
+            },
+            {
+                featureType: "road",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#9ca5b3" }],
+            },
+            {
+                featureType: "water",
+                elementType: "geometry",
+                stylers: [{ color: "#17263c" }],
+            },
+            {
+                featureType: "water",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#515c6d" }],
+            },
+            {
+                featureType: "water",
+                elementType: "labels.text.stroke",
+                stylers: [{ color: "#17263c" }],
+            },
+        ]
+    };
+
+    map = new google.maps.Map(document.getElementById("festival-map"), mapOptions);
+
+    renderFriends();
+
+    // Start Simulation
+    setInterval(simulateMovement, 3000);
+}
+
+// Render Friends as Markers
 function renderFriends() {
-    const map = document.getElementById('festival-map');
-    // Clear existing friend pins (keep meetup pin if any)
-    const existingPins = map.querySelectorAll('.friend-pin');
-    existingPins.forEach(p => p.remove());
+    if (!map) return;
 
     friends.forEach(friend => {
-        const pin = document.createElement('div');
-        pin.className = 'friend-pin';
-        pin.style.left = friend.x + '%';
-        pin.style.top = friend.y + '%';
-        pin.setAttribute('data-name', friend.name);
-        pin.onclick = () => showFriendDetails(friend);
+        // If marker exists, update position
+        if (friendMarkers[friend.id]) {
+            const latLng = new google.maps.LatLng(friend.lat, friend.lng);
+            friendMarkers[friend.id].setPosition(latLng);
+        } else {
+            // Create new marker
+            // Custom icon handling
+            const icon = {
+                url: friend.image, // Using user profile pic as icon - simulated by simple marker for now or need custom overlay
+                scaledSize: new google.maps.Size(40, 40),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(20, 40)
+            };
 
-        pin.innerHTML = `<img src="${friend.image}" alt="${friend.name}">`;
-        map.appendChild(pin);
+            // Using standard marker with label for simplicity first, or circle
+            const marker = new google.maps.Marker({
+                position: { lat: friend.lat, lng: friend.lng },
+                map: map,
+                title: friend.name,
+                animation: google.maps.Animation.DROP,
+                // Simple label for now to distinguish
+                label: {
+                    text: friend.name[0],
+                    color: "white",
+                    fontWeight: "bold"
+                }
+            });
+
+            // Add click listener
+            marker.addListener("click", () => {
+                showFriendDetails(friend);
+            });
+
+            friendMarkers[friend.id] = marker;
+        }
     });
 }
 
@@ -328,7 +429,7 @@ window.showFriendDetails = function (friend) {
     document.getElementById('friend-name').textContent = friend.name;
     document.getElementById('friend-status').textContent = `"${friend.status}"`;
     document.getElementById('friend-battery').textContent = friend.battery + '%';
-    document.getElementById('friend-location').textContent = friend.location;
+    document.getElementById('friend-location').textContent = friend.location || 'Unknown'; // Use stored text location or reverse geocode later
 
     modal.classList.remove('hidden');
     modal.classList.add('active');
@@ -347,50 +448,48 @@ window.pingFriend = function () {
 }
 
 window.setMeetupPoint = function () {
-    const map = document.getElementById('festival-map');
+    if (!map) return;
 
-    // Remove existing meetup pin
-    const existing = map.querySelector('.meetup-pin');
-    if (existing) existing.remove();
+    // Get center of map
+    const center = map.getCenter();
 
-    // Create new pin randomly for demo (or click listener in real app)
-    const pin = document.createElement('div');
-    pin.className = 'meetup-pin';
-    pin.innerHTML = '📍';
-    pin.style.top = (20 + Math.random() * 60) + '%';
-    pin.style.left = (20 + Math.random() * 60) + '%';
+    // Remove existing
+    if (meetupMarker) meetupMarker.setMap(null);
 
-    map.appendChild(pin);
+    meetupMarker = new google.maps.Marker({
+        position: center,
+        map: map,
+        title: "Meetup Point",
+        animation: google.maps.Animation.BOUNCE,
+        icon: {
+            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+            scale: 6,
+            fillColor: "#bd00ff",
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "white"
+        }
+    });
 
     // Alert
     const toast = document.getElementById('notification-toast');
-    toast.innerHTML = `📍 Meetup Point Set! Notifying Squad...`;
+    toast.innerHTML = `📍 Meetup Point Set at Map Center! Notifying Squad...`;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 // Simulate Friend Movement
-setInterval(() => {
+function simulateMovement() {
     friends = friends.map(friend => {
-        // Random walk
-        let newX = friend.x + (Math.random() - 0.5) * 4;
-        let newY = friend.y + (Math.random() - 0.5) * 4;
+        // Small random lat/lng delta
+        const deltaLat = (Math.random() - 0.5) * 0.0005;
+        const deltaLng = (Math.random() - 0.5) * 0.0005;
 
-        // Bounds check (0-100)
-        newX = Math.max(5, Math.min(95, newX));
-        newY = Math.max(5, Math.min(95, newY));
-
-        return { ...friend, x: newX, y: newY };
+        return { ...friend, lat: friend.lat + deltaLat, lng: friend.lng + deltaLng };
     });
 
-    // Save minimal updates to local storage? maybe not needed for mock
-    // localStorage.setItem('friends', JSON.stringify(friends)); 
-
     renderFriends();
-}, 2500);
-
-// Init Render
-renderFriends();
+}
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {
@@ -399,4 +498,104 @@ if ('serviceWorker' in navigator) {
             .then(reg => console.log('Service Worker registered!', reg))
             .catch(err => console.log('SW registration failed: ', err));
     });
+}
+
+// Chat Widget Logic
+let isChatOpen = false;
+
+window.toggleChat = function () {
+    const widget = document.getElementById('chat-widget');
+    const icon = widget.querySelector('.toggle-icon');
+    isChatOpen = !isChatOpen;
+
+    if (isChatOpen) {
+        widget.classList.remove('collapsed');
+        icon.textContent = '▼';
+        // Auto scroll to bottom
+        const body = document.getElementById('chat-messages');
+        body.scrollTop = body.scrollHeight;
+    } else {
+        widget.classList.add('collapsed');
+        icon.textContent = '▲';
+    }
+}
+
+window.handleChatKey = function (e) {
+    if (e.key === 'Enter') {
+        sendChatMessage();
+    }
+}
+
+window.sendChatMessage = function () {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    // Add User Message
+    addMessage('You', text, 'sent');
+    input.value = '';
+
+    // Scroll
+    const body = document.getElementById('chat-messages');
+    body.scrollTop = body.scrollHeight;
+
+    // Simulate Reply
+    setTimeout(() => {
+        const randomFriend = friends[Math.floor(Math.random() * friends.length)];
+        const responses = [
+            "Omg yes! ⚡️",
+            "On my way! 🏃‍♀️",
+            "Meet at the left speaker?",
+            "Wait for me!!",
+            "This set is gonna be INSANE 🔥"
+        ];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        addMessage(randomFriend.name, randomResponse, 'received');
+    }, 2000 + Math.random() * 2000);
+}
+
+function addMessage(sender, text, type) {
+    const container = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = `message ${type}`;
+    div.innerHTML = `
+        <span class="sender">${sender}</span>
+        <p>${text}</p>
+    `;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+// Watch Notification Logic
+window.sendNotification = function () {
+    // 1. Show In-App Toast
+    const toast = document.getElementById('notification-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 5000);
+
+    // 2. Show Visual Watch Demo Overlay
+    const watchOverlay = document.getElementById('watch-overlay');
+    watchOverlay.classList.remove('hidden');
+    // Force reflow
+    void watchOverlay.offsetWidth;
+    watchOverlay.classList.add('active');
+
+    // 3. Request & Send Real Browser Notification
+    if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification("⌚ FESTIE BESTIE", {
+                    body: "HEADLINER STARTING: The Strokes in 15 mins!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/3075/3075908.png",
+                    silent: false
+                });
+            }
+        });
+    }
+}
+
+window.closeWatchDemo = function () {
+    const watchOverlay = document.getElementById('watch-overlay');
+    watchOverlay.classList.remove('active');
+    setTimeout(() => watchOverlay.classList.add('hidden'), 500);
 }

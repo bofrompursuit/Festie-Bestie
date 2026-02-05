@@ -163,6 +163,49 @@
         </div>
     </div>
 
+    <!-- Chat Widget -->
+    <div id="chat-widget" class="chat-widget collapsed">
+        <div class="chat-header" onclick="toggleChat()">
+            <span>💬 SQUAD CHAT (3)</span>
+            <span class="toggle-icon">▲</span>
+        </div>
+        <div class="chat-body">
+            <div id="chat-messages" class="chat-messages">
+                <div class="message received">
+                    <span class="sender">Sarah</span>
+                    <p>Where is everyone heading?? 🎪</p>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleChatKey(event)">
+                <button onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apple Watch Demo Overlay -->
+    <div id="watch-overlay" class="watch-overlay hidden">
+        <div class="watch-device">
+            <div class="watch-screen">
+                <div class="watch-header">
+                    <span>10:09</span>
+                    <span style="color: #4cd964">FESTIE BESTIE</span>
+                </div>
+                <div class="watch-content">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3075/3075908.png" alt="Icon" class="watch-icon">
+                    <h4>HEADLINER ALERT</h4>
+                    <p>The Strokes starting in 15 mins at Main Stage!</p>
+                </div>
+                <button class="watch-btn" onclick="closeWatchDemo()">DISMISS</button>
+            </div>
+            <div class="watch-crown"></div>
+            <div class="watch-button"></div>
+        </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCruIvKrtbEucXPMF_TX8FF4xNt8FsYf9s&callback=initMap"></script>
     <script src="app.js"></script>
 </body>
 
