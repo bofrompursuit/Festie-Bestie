@@ -300,9 +300,9 @@ let meetupMarker = null;
 // Initial Data with Real Coordinates (Randalls Island / Gov Ball context)
 // Base coords: 40.796944, -73.922114 (Approx Randalls Island)
 const initialFriends = [
-    { id: 1, name: "Sarah", status: "At the Main Stage", location: "Main Stage", lat: 40.7960, lng: -73.9220, battery: 78, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80" },
-    { id: 2, name: "Mike", status: "Grabbing food", location: "Food Court", lat: 40.7975, lng: -73.9240, battery: 45, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" },
-    { id: 3, name: "Jess", status: "Chilling @ VIP", location: "VIP Tent", lat: 40.7965, lng: -73.9210, battery: 92, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80" }
+    { id: 1, name: "Sarah", status: "At the Main Stage", location: "Main Stage", lat: 40.7960, lng: -73.9220, battery: 78, image: "https://i.pravatar.cc/150?u=sarah" },
+    { id: 2, name: "Mike", status: "Grabbing food", location: "Food Court", lat: 40.7975, lng: -73.9240, battery: 45, image: "https://i.pravatar.cc/150?u=mike" },
+    { id: 3, name: "Jess", status: "Chilling @ VIP", location: "VIP Tent", lat: 40.7965, lng: -73.9210, battery: 92, image: "https://i.pravatar.cc/150?u=jess" }
 ];
 
 let friends = JSON.parse(localStorage.getItem('friends')) || initialFriends;
