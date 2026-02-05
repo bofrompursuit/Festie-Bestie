@@ -308,11 +308,11 @@ const initialFriends = [
 let friends = JSON.parse(localStorage.getItem('friends')) || initialFriends;
 
 // Init Google Map
-window.initMap = function () {
+window.initMap = async function () {
     const mapOptions = {
         center: { lat: 40.7968, lng: -73.9225 }, // Randalls Island
         zoom: 16,
-        mapId: '8e0a97af9386f1e5', // Optional: Use a Map ID for styling if available, or remove
+        mapId: '8e0a97af9386f1e5', // Required for AdvancedMarkerElement
         disableDefaultUI: false,
         styles: [ // Dark Mode Style
             { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
@@ -373,6 +373,14 @@ window.initMap = function () {
 
     map = new google.maps.Map(document.getElementById("festival-map"), mapOptions);
 
+    // Load marker library once
+    try {
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        window.AdvancedMarkerElement = AdvancedMarkerElement;
+    } catch (e) {
+        console.error("Failed to load Google Maps marker library:", e);
+    }
+
     renderFriends();
 
     // Start Simulation
@@ -381,10 +389,7 @@ window.initMap = function () {
 
 // Render Friends as Markers
 async function renderFriends() {
-    if (!map) return;
-
-    // Use AdvancedMarkerElement for HTML content support
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    if (!map || !window.AdvancedMarkerElement) return;
 
     friends.forEach(friend => {
         // If marker exists, update position
@@ -397,7 +402,7 @@ async function renderFriends() {
             pin.setAttribute('data-name', friend.name);
             pin.innerHTML = `<img src="${friend.image}" alt="${friend.name}">`;
 
-            const marker = new AdvancedMarkerElement({
+            const marker = new window.AdvancedMarkerElement({
                 map: map,
                 position: { lat: friend.lat, lng: friend.lng },
                 title: friend.name,
